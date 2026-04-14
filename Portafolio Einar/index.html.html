@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Einar Chalco | AI Automation Architect</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #080a0f;
+    --bg-secondary: #0d1017;
+    --bg-card: #111520;
+    --bg-card-hover: #161c2a;
+    --blue: #1a7cfa;
+    --blue-bright: #3d8fff;
+    --blue-glow: rgba(26, 124, 250, 0.25);
+    --green: #00f5a0;
+    --green-glow: rgba(0, 245, 160, 0.2);
+    --text-primary: #eef1f7;
+    --text-secondary: #8a95a8;
+    --text-muted: #4a5568;
+    --border: rgba(255,255,255,0.06);
+    --border-blue: rgba(26, 124, 250, 0.3);
+    --font-main: 'Montserrat', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font-main); background: var(--bg-primary); color: var(--text-primary); overflow-x: hidden; }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.5;
+  }
+  .grid-bg {
+    position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(26,124,250,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(26,124,250,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5%; height: 68px;
+    background: rgba(8,10,15,0.85); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; color: var(--text-primary); text-transform: uppercase; text-decoration: none; }
+  .nav-logo span { color: var(--blue); }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.08em; color: var(--text-secondary); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text-primary); }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.55rem 1.3rem; font-family: var(--font-main); font-size: 0.78rem;
+    font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; border-radius: 4px; transition: all 0.25s;
+    cursor: pointer; border: none;
+  }
+  .btn-primary { background: var(--blue); color: #fff; box-shadow: 0 0 20px var(--blue-glow); }
+  .btn-primary:hover { background: var(--blue-bright); box-shadow: 0 0 32px rgba(26,124,250,0.5); transform: translateY(-1px); }
+  .btn-outline { background: transparent; color: var(--text-primary); border: 1px solid var(--border-blue); }
+  .btn-outline:hover { border-color: var(--blue); color: var(--blue); box-shadow: 0 0 16px var(--blue-glow); }
+  .btn-wa { background: #25D366; color: #fff; box-shadow: 0 0 20px rgba(37,211,102,0.3); }
+  .btn-wa:hover { background: #1ebe59; box-shadow: 0 0 32px rgba(37,211,102,0.5); transform: translateY(-1px); }
+
+  /* HERO */
+  #hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 120px 5% 80px; overflow: hidden; }
+  .hero-glow { position: absolute; top: -200px; right: -200px; width: 700px; height: 700px; background: radial-gradient(circle, rgba(26,124,250,0.12) 0%, transparent 65%); pointer-events: none; }
+  .hero-glow-2 { position: absolute; bottom: -100px; left: -100px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(0,245,160,0.06) 0%, transparent 65%); pointer-events: none; }
+  .hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 400px; gap: 5rem; align-items: center; max-width: 1300px; margin: 0 auto; width: 100%; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.35rem 0.9rem; border: 1px solid var(--border-blue); border-radius: 2px;
+    font-family: var(--font-mono); font-size: 0.72rem; color: var(--blue);
+    letter-spacing: 0.1em; margin-bottom: 1.5rem; background: rgba(26,124,250,0.06);
+  }
+  .hero-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .hero-headline { font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 900; line-height: 1.06; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+  .hero-headline .accent { color: var(--blue); }
+  .hero-headline .accent-green { color: var(--green); }
+  .hero-sub { font-size: 1.05rem; font-weight: 400; color: var(--text-secondary); line-height: 1.7; max-width: 520px; margin-bottom: 2.5rem; }
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  /* Hero image */
+  .hero-image-wrap { position: relative; }
+  .hero-img-frame {
+    position: relative; border-radius: 12px; overflow: hidden;
+    border: 1px solid var(--border-blue);
+    box-shadow: 0 0 60px rgba(26,124,250,0.18), 0 30px 80px rgba(0,0,0,0.5);
+    aspect-ratio: 3/4; max-height: 520px;
+  }
+  .hero-img-frame img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+  .corner { position: absolute; width: 20px; height: 20px; border-color: var(--blue); border-style: solid; z-index: 2; }
+  .corner-tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .corner-tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+  .corner-bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+  .corner-br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+  .hero-stat-bar {
+    position: absolute; bottom: -20px; left: -20px;
+    background: rgba(13,16,23,0.95); border: 1px solid var(--border-blue); border-radius: 8px;
+    padding: 0.9rem 1.2rem; display: flex; gap: 1.5rem;
+    backdrop-filter: blur(12px); box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  .stat-item { text-align: center; }
+  .stat-num { font-size: 1.3rem; font-weight: 800; color: var(--blue); display: block; }
+  .stat-label { font-size: 0.63rem; font-family: var(--font-mono); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* SECTIONS */
+  section { position: relative; z-index: 1; }
+  .section-inner { max-width: 1300px; margin: 0 auto; padding: 0 5%; }
+  .section-label { font-family: var(--font-mono); font-size: 0.72rem; color: var(--blue); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.8rem; }
+  .section-label::before { content: ''; width: 24px; height: 1px; background: var(--blue); }
+
+  /* STACK */
+  #stack { padding: 80px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg-secondary); }
+  .stack-head { text-align: center; font-size: 0.78rem; font-family: var(--font-mono); color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 3rem; }
+  .stack-logos { display: flex; align-items: center; justify-content: center; gap: 2rem; flex-wrap: wrap; }
+  .tech-pill {
+    display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 1.2rem;
+    border: 1px solid var(--border); border-radius: 3px; background: var(--bg-card);
+    font-size: 0.82rem; font-weight: 600; letter-spacing: 0.04em; color: var(--text-secondary);
+    transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .tech-pill::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--blue-glow), transparent); opacity: 0; transition: opacity 0.3s; }
+  .tech-pill:hover { border-color: var(--blue); color: var(--text-primary); box-shadow: 0 0 20px var(--blue-glow); transform: translateY(-2px); }
+  .tech-pill:hover::before { opacity: 1; }
+  .tech-icon { font-size: 1.1rem; position: relative; z-index: 1; }
+  .tech-name { position: relative; z-index: 1; }
+
+  /* PROJECTS */
+  #projects { padding: 120px 0; }
+  .projects-header { margin-bottom: 4rem; }
+  .projects-title { font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+  .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .project-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+    overflow: hidden; transition: all 0.35s; display: flex; flex-direction: column; position: relative;
+  }
+  .project-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--blue), var(--green)); opacity: 0; transition: opacity 0.35s; }
+  .project-card:hover { border-color: var(--border-blue); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px var(--blue-glow); background: var(--bg-card-hover); }
+  .project-card:hover::before { opacity: 1; }
+
+  .card-media { position: relative; height: 220px; background: #050709; border-bottom: 1px solid var(--border); overflow: hidden; }
+  .card-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card-media img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; transition: transform 0.4s; }
+  .project-card:hover .card-media img { transform: scale(1.03); }
+  .media-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,10,15,0.65) 0%, transparent 55%); pointer-events: none; }
+  .media-badge {
+    position: absolute; top: 10px; right: 10px;
+    background: rgba(8,10,15,0.88); border: 1px solid var(--border-blue); border-radius: 3px;
+    padding: 3px 8px; font-family: var(--font-mono); font-size: 0.6rem; color: var(--blue);
+    letter-spacing: 0.08em; backdrop-filter: blur(8px);
+  }
+  .play-hint { position: absolute; bottom: 10px; left: 10px; font-family: var(--font-mono); font-size: 0.6rem; color: rgba(255,255,255,0.4); letter-spacing: 0.06em; }
+
+  .card-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+  .card-number { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; margin-bottom: 0.6rem; }
+  .card-title { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 0.8rem; line-height: 1.25; }
+  .card-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.65; margin-bottom: 1.2rem; flex: 1; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .tag { padding: 0.25rem 0.6rem; border-radius: 2px; font-family: var(--font-mono); font-size: 0.62rem; font-weight: 500; letter-spacing: 0.06em; }
+  .tag-blue { background: rgba(26,124,250,0.12); border: 1px solid rgba(26,124,250,0.3); color: var(--blue); }
+  .tag-green { background: rgba(0,245,160,0.1); border: 1px solid rgba(0,245,160,0.25); color: var(--green); }
+  .tag-gray { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text-muted); }
+
+  /* ABOUT */
+  #about { padding: 120px 0; background: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+  .about-title { font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 1.5rem; }
+  .about-quote { font-size: 1.35rem; font-weight: 700; line-height: 1.4; color: var(--blue); letter-spacing: -0.01em; border-left: 3px solid var(--blue); padding-left: 1.5rem; margin-bottom: 2rem; font-style: italic; }
+  .about-copy { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 2rem; }
+  .about-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .metric-box { padding: 1.2rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; text-align: center; transition: all 0.3s; }
+  .metric-box:hover { border-color: var(--border-blue); box-shadow: 0 0 20px var(--blue-glow); }
+  .metric-val { font-size: 1.5rem; font-weight: 900; color: var(--blue); display: block; letter-spacing: -0.02em; }
+  .metric-label { font-size: 0.65rem; font-family: var(--font-mono); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.3rem; display: block; }
+
+  .code-block {
+    background: #0a0d14; border: 1px solid var(--border-blue); border-radius: 8px;
+    padding: 1.5rem; font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.8;
+    box-shadow: 0 0 40px rgba(26,124,250,0.1), 0 20px 60px rgba(0,0,0,0.4);
+    position: relative; overflow: hidden;
+  }
+  .code-block::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, var(--blue), var(--green), transparent); }
+  .code-top-bar { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; } .dot-y { background: #ffbd2e; } .dot-g { background: var(--green); }
+  .code-filename { font-size: 0.68rem; color: var(--text-muted); margin-left: auto; }
+  .c-comment { color: #4a6a4a; } .c-keyword { color: #b388ff; } .c-fn { color: #64b5f6; }
+  .c-str { color: var(--green); } .c-var { color: #e0e0e0; } .c-num { color: #ff8a65; } .c-type { color: #81c784; }
+  .typing-cursor { display: inline-block; width: 2px; height: 1em; background: var(--blue); vertical-align: middle; animation: blink 1s step-end infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* CTA */
+  #contact {
+    padding: 120px 5%;
+    background: linear-gradient(135deg, #050810 0%, #08122a 50%, #050810 100%);
+    border-top: 1px solid var(--border-blue); text-align: center; position: relative; overflow: hidden;
+  }
+  #contact::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 800px; height: 400px; background: radial-gradient(ellipse, rgba(26,124,250,0.15) 0%, transparent 70%); pointer-events: none; }
+  .cta-label { font-family: var(--font-mono); font-size: 0.72rem; color: var(--green); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.8rem; }
+  .cta-label::before, .cta-label::after { content: ''; width: 30px; height: 1px; background: var(--green); }
+  .cta-headline { font-size: clamp(2.2rem, 4.5vw, 3.5rem); font-weight: 900; letter-spacing: -0.025em; line-height: 1.1; margin-bottom: 1rem; position: relative; z-index: 1; }
+  .cta-sub { font-size: 1rem; color: var(--text-secondary); margin-bottom: 2.5rem; position: relative; z-index: 1; }
+  .cta-btns { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; position: relative; z-index: 1; margin-bottom: 2rem; }
+  .btn-cta { padding: 0.85rem 2rem; font-size: 0.85rem; }
+  .cta-links { display: flex; justify-content: center; gap: 2rem; font-size: 0.8rem; font-family: var(--font-mono); position: relative; z-index: 1; }
+  .cta-links a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; letter-spacing: 0.05em; }
+  .cta-links a:hover { color: var(--blue); }
+
+  footer { padding: 1.5rem 5%; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-family: var(--font-mono); color: var(--text-muted); background: var(--bg-primary); }
+
+  .fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+  .delay-1 { transition-delay: 0.1s; } .delay-2 { transition-delay: 0.2s; }
+
+  @media (max-width: 1024px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-image-wrap { display: none; }
+    .projects-grid { grid-template-columns: 1fr 1fr; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+  }
+  @media (max-width: 768px) {
+    .projects-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .hero-headline { font-size: 2.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">EINAR CHALCO<span> | AI Automation Architect</span></a>
+  <ul class="nav-links">
+    <li><a href="#projects">Proyectos</a></li>
+    <li><a href="#about">Sobre mí</a></li>
+    <li><a href="#contact">Contacto</a></li>
+    <li><a href="https://wa.me/qr/LC5LMKLW6MSJH1" target="_blank" class="btn btn-primary" style="padding:0.45rem 1rem;">Hablemos</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-tag">Arquitecto de IA &amp; Automatización · Disponible para proyectos</div>
+      <h1 class="hero-headline">
+        Ingeniería de <span class="accent">Eficiencia.</span><br>
+        Automatizando el <span class="accent-green">Crecimiento.</span>
+      </h1>
+      <p class="hero-sub">
+        Construyo agentes de IA escalables, flujos de trabajo inteligentes y sistemas digitales personalizados para que las startups operen más rápido sin la carga operativa.
+      </p>
+      <div class="hero-ctas">
+        <a href="#projects" class="btn btn-primary">Ver Proyectos</a>
+        <a href="https://www.linkedin.com/in/einar-chalco-2025ei" target="_blank" class="btn btn-outline">↗ LinkedIn</a>
+      </div>
+    </div>
+
+    <div class="hero-image-wrap">
+      <div class="hero-img-frame">
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div>
+        <div class="corner corner-br"></div>
+        <img
+          src="https://res.cloudinary.com/djg56abwb/image/upload/v1774494600/Foto_de_Perfil_LinkedIn_twr14z.jpg"
+          alt="Einar Chalco – AI Automation Architect"
+        />
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section id="stack">
+  <div class="section-inner">
+    <p class="stack-head">Arquitectura moderna. Resultados reales:</p>
+    <div class="stack-logos">
+      <div class="tech-pill"><span class="tech-icon">⚡</span><span class="tech-name">n8n</span></div>
+      <div class="tech-pill"><span class="tech-icon">🤖</span><span class="tech-name">OpenAI</span></div>
+      <div class="tech-pill"><span class="tech-icon">🗄</span><span class="tech-name">Supabase</span></div>
+      <div class="tech-pill"><span class="tech-icon">⚙</span><span class="tech-name">Redis</span></div>
+      <div class="tech-pill"><span class="tech-icon">🔁</span><span class="tech-name">Make</span></div>
+      <div class="tech-pill"><span class="tech-icon">🐍</span><span class="tech-name">Python</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-inner">
+    <div class="projects-header fade-up">
+      <div class="section-label">Casos de Estudio</div>
+      <h2 class="projects-title">Proyectos Destacados</h2>
+    </div>
+    <div class="projects-grid">
+
+      <!-- P1: WhatsApp -->
+      <div class="project-card fade-up">
+        <div class="card-media">
+          <video src="https://res.cloudinary.com/djg56abwb/video/upload/v1774526750/Chatbot_fbvr3u.mp4" autoplay muted loop playsinline preload="metadata"></video>
+          <div class="media-overlay"></div>
+          <div class="media-badge">▶ DEMO EN VIVO</div>
+          <div class="play-hint">// MecaBot en acción</div>
+        </div>
+        <div class="card-body">
+          <div class="card-number">01 / WHATSAPP AI AGENT</div>
+          <h3 class="card-title">WhatsApp Sales AI Agent — MecaBot</h3>
+          <p class="card-desc">Agente de ventas conversacional end-to-end que gestiona calificación de leads, consultas de catálogo y seguimiento automatizado por WhatsApp. Integra pipeline RAG para recuperación de conocimiento de productos en tiempo real y memoria persistente entre sesiones.</p>
+          <div class="card-tags">
+            <span class="tag tag-blue">n8n</span>
+            <span class="tag tag-blue">OpenAI</span>
+            <span class="tag tag-blue">Redis</span>
+            <span class="tag tag-green">RAG Pipeline</span>
+            <span class="tag tag-green">Memoria Persistente</span>
+            <span class="tag tag-gray">Lead Automation</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- P2: SOCEIQAAP -->
+      <div class="project-card fade-up delay-1">
+        <div class="card-media">
+          <video src="https://res.cloudinary.com/djg56abwb/video/upload/v1774501544/1_MVP_ipj4fh.mp4" autoplay muted loop playsinline preload="metadata"></video>
+          <div class="media-overlay"></div>
+          <div class="media-badge">▶ MVP REAL</div>
+          <div class="play-hint">// App SOCEIQAAP</div>
+        </div>
+        <div class="card-body">
+          <div class="card-number">02 / ERP / CRM SYSTEM</div>
+          <h3 class="card-title">SOCEIQAAP Digital Management System</h3>
+          <p class="card-desc">ERP/CRM full-stack que reemplaza flujos de trabajo manuales en Excel. Control de acceso basado en roles con 3 niveles de permisos (Socio, Líder, Directiva), dashboards de KPIs en tiempo real y backend Supabase para 200+ usuarios concurrentes desarrollado con Antigravity.</p>
+          <div class="card-tags">
+            <span class="tag tag-blue">Supabase Auth</span>
+            <span class="tag tag-blue">Supabase DB</span>
+            <span class="tag tag-gray">Vanilla JS</span>
+            <span class="tag tag-green">RBAC</span>
+            <span class="tag tag-green">KPIs en Tiempo Real</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- P3: PROESA Colab -->
+      <div class="project-card fade-up delay-2">
+        <div class="card-media">
+          <img
+            src="https://res.cloudinary.com/djg56abwb/image/upload/v1776138175/Proesa_traspasos_gs4mi8.png"
+            alt="PROESA – Flujo de automatización en Colab"
+            loading="lazy"
+          />
+          <div class="media-overlay"></div>
+          <div class="media-badge">Colab · Automatización</div>
+          <div class="play-hint">// Automatización de traspasos</div>
+        </div>
+        <div class="card-body">
+          <div class="card-number">03 / AUTOMATION MODEL</div>
+          <h3 class="card-title">PROESA Automation Model</h3>
+          <p class="card-desc">Ingeniería de un ecosistema de planificación que gestiona algorítmicamente más de 2,700 SKUs de 11 marcas multinacionales. Implementa una arquitectura de datos que redujo el tiempo de ejecución en un 75% y el tiempo de planificación de inventarios en un 51.8%, eliminando por completo los errores de transcripción manual en tres departamentos clave.</p>
+          <div class="card-tags">
+            <span class="tag tag-blue">VBA</span>
+            <span class="tag tag-blue">Power BI</span>
+            <span class="tag tag-blue">Colab</span>
+            <span class="tag tag-green">51.8% Tiempo Ahorrado</span>
+            <span class="tag tag-green">Bajo número de Errores Manuales</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="fade-up">
+        <div class="section-label">Sobre mí</div>
+        <h2 class="about-title">Cerrando la brecha entre los datos crudos y los resultados reales.</h2>
+        <blockquote class="about-quote">"Los sistemas deben trabajar más duro que las personas que los operan."</blockquote>
+        <p class="about-copy">
+          Einar es un Ingeniero Industrial convertido en Arquitecto de IA y Automatización con experiencia optimizando planificación de demanda, logística y control de calidad en corporaciones como AB-InBev y PROESA S.A. Como ingeniero enfocado a la Arquitectura con IA, diseña ecosistemas operativos escalables desde datos crudos, construyendo sistemas inteligentes que eliminan cuellos de botella críticos antes de que se vuelvan costosos para la organización.
+        </p>
+        <div class="about-metrics">
+          <div class="metric-box">
+            <span class="metric-val">75%</span>
+            <span class="metric-label">Tiempo Ejecución Ahorrado</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-val">2,700+</span>
+            <span class="metric-label">SKUs Automatizados</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-val">25%</span>
+            <span class="metric-label">Mejora KPIs Sostenibilidad</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-visual fade-up delay-1">
+        <div class="code-block">
+          <div class="code-top-bar">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+            <span class="code-filename">arquitecto.perfil.ts</span>
+          </div>
+          <div>
+            <span class="c-keyword">const</span> <span class="c-var">einar</span> = {<br>
+            &nbsp;&nbsp;<span class="c-type">rol</span>: <span class="c-str">"AI Automation Architect"</span>,<br>
+            &nbsp;&nbsp;<span class="c-type">origen</span>: <span class="c-str">"Ingeniería Industrial"</span>,<br>
+            &nbsp;&nbsp;<span class="c-type">stack</span>: [<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">"n8n"</span>, <span class="c-str">"OpenAI"</span>, <span class="c-str">"Antigravity"</span>,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">"Supabase"</span>, <span class="c-str">"Redis"</span>, <span class="c-str">"Make"</span>, <span class="c-str">"Python"</span><br>
+            &nbsp;&nbsp;],<br>
+            &nbsp;&nbsp;<span class="c-type">especialidad</span>: [<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">"Agentes IA &amp; RAG Pipelines"</span>,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">"Automatización de Procesos Logísticos"</span>,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">"Arquitectura de Sistemas ERP/CRM"</span>,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">"Optimización de Supply Chain"</span><br>
+            &nbsp;&nbsp;],<br>
+            &nbsp;&nbsp;<span class="c-fn">entregar</span>(): <span class="c-type">Promise</span>&lt;<span class="c-str">"resultados_escalables"</span>&gt; {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-keyword">return</span> <span class="c-fn">construirEcosistema</span>({<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-var">eficiencia_operativa</span>: <span class="c-str">"75%+"</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;});<br>
+            &nbsp;&nbsp;}<br>
+            };<span class="typing-cursor"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section id="contact">
+  <div class="cta-label">Disponible para proyectos</div>
+  <h2 class="cta-headline">¿Listo para escalar sin la<br>carga operativa?</h2>
+  <p class="cta-sub">Construyamos tu próximo flujo automatizado.</p>
+  <div class="cta-btns">
+    <a href="https://wa.me/qr/LC5LMKLW6MSJH1" target="_blank" class="btn btn-wa btn-cta">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Agendar llamada de 15 min
+    </a>
+    <a href="https://www.linkedin.com/in/einar-chalco-2025ei" target="_blank" class="btn btn-outline btn-cta">↗ Ver LinkedIn</a>
+  </div>
+  <div class="cta-links">
+    <a href="https://www.linkedin.com/in/einar-chalco-2025ei" target="_blank">linkedin.com/in/einar-chalco-2025ei</a>
+    <a href="https://wa.me/qr/LC5LMKLW6MSJH1" target="_blank">WhatsApp directo</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2026 Einar Chalco</span>
+  <span>// Construido para escalar. Diseñado para convertir.</span>
+  <span>AI Automation Architect</span>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  window.addEventListener('scroll', () => {
+    document.querySelector('nav').style.background =
+      window.scrollY > 50 ? 'rgba(8,10,15,0.97)' : 'rgba(8,10,15,0.85)';
+  });
+</script>
+</body>
+</html>
